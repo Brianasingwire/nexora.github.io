@@ -27,11 +27,11 @@
     theme: {
       extend: {
         colors: {
-          ink: '#12151B',
-          paper: '#F5F4F0',
-          signal: '#2DD4BF',
-          slate: '#8B8FA3',
-          line: '#22262F',
+          ink: 'rgb(var(--ink) / <alpha-value>)',
+          paper: 'rgb(var(--paper) / <alpha-value>)',
+          signal: 'rgb(var(--signal) / <alpha-value>)',
+          slate: 'rgb(var(--slate) / <alpha-value>)',
+          line: 'rgb(var(--line) / <alpha-value>)',
         },
         fontFamily: {
           display: ['"Space Grotesk"', 'sans-serif'],
@@ -41,12 +41,36 @@
     },
   }
 </script>
+<script>
+  try {
+    const savedTheme = localStorage.getItem('nexora-theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  } catch (_) {}
+</script>
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
 
 <style>
+  :root {
+    --ink: 18 21 27;
+    --paper: 245 244 240;
+    --signal: 45 212 191;
+    --slate: 139 143 163;
+    --line: 34 38 47;
+    color-scheme: light;
+  }
+  .dark {
+    --ink: 245 244 240;
+    --paper: 18 21 27;
+    --signal: 94 234 212;
+    --slate: 166 170 188;
+    --line: 218 220 228;
+    color-scheme: dark;
+  }
   html { scroll-behavior: smooth; }
   body { font-family: 'Inter', sans-serif; }
   .font-display { font-family: 'Space Grotesk', sans-serif; }
@@ -78,9 +102,9 @@
 <div id="root"></div>
 
 <script type="text/babel">
-const { useState } = React;
+const { useEffect, useState } = React;
 
-function NavBar() {
+function NavBar({ dark, onThemeToggle }) {
   const [open, setOpen] = useState(false);
   const links = [
     { href: '#services', label: 'Services' },
@@ -99,9 +123,18 @@ function NavBar() {
             <a key={l.href} href={l.href} className="hover:text-ink transition-colors">{l.label}</a>
           ))}
         </nav>
-        <a href="#contact" className="hidden md:inline-block text-sm font-medium bg-ink text-paper px-4 py-2 rounded-sm hover:bg-ink/85 transition-colors">
-          Book a Free Audit
-        </a>
+        <div className="hidden md:flex items-center gap-3">
+          <button type="button" onClick={onThemeToggle} aria-label={`Switch to ${dark ? 'light' : 'dark'} mode`} aria-pressed={dark} className="w-9 h-9 inline-flex items-center justify-center border border-ink/20 rounded-sm hover:bg-ink/10 transition-colors">
+            {dark ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" /></svg>
+            )}
+          </button>
+          <a href="#contact" className="text-sm font-medium bg-ink text-paper px-4 py-2 rounded-sm hover:bg-ink/85 transition-colors">
+            Book a Free Audit
+          </a>
+        </div>
         <button className="md:hidden" onClick={() => setOpen(!open)} aria-label="Toggle menu">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
             {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
@@ -113,6 +146,7 @@ function NavBar() {
           {links.map(l => (
             <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.label}</a>
           ))}
+          <button type="button" onClick={onThemeToggle} className="text-left text-ink/70">Switch to {dark ? 'light' : 'dark'} mode</button>
           <a href="#contact" onClick={() => setOpen(false)} className="font-medium text-signal">Book a Free Audit →</a>
         </div>
       )}
@@ -129,13 +163,13 @@ function PipelineDiagram() {
   ];
   return (
     <svg viewBox="0 0 500 120" className="w-full max-w-md" role="img" aria-label="Diagram showing lead flow from Capture to Score to Follow Up to Close">
-      <line x1="40" y1="60" x2="180" y2="20" stroke="#8B8FA3" strokeWidth="1.5" className="pipeline-line" pathLength="1" />
-      <line x1="180" y1="20" x2="320" y2="60" stroke="#8B8FA3" strokeWidth="1.5" className="pipeline-line" pathLength="1" style={{animationDelay: '0.7s'}} />
-      <line x1="320" y1="60" x2="460" y2="20" stroke="#2DD4BF" strokeWidth="1.5" className="pipeline-line" pathLength="1" style={{animationDelay: '1.1s'}} />
+      <line x1="40" y1="60" x2="180" y2="20" stroke="var(--slate)" strokeWidth="1.5" className="pipeline-line" pathLength="1" />
+      <line x1="180" y1="20" x2="320" y2="60" stroke="var(--slate)" strokeWidth="1.5" className="pipeline-line" pathLength="1" style={{animationDelay: '0.7s'}} />
+      <line x1="320" y1="60" x2="460" y2="20" stroke="var(--signal)" strokeWidth="1.5" className="pipeline-line" pathLength="1" style={{animationDelay: '1.1s'}} />
       {nodes.map((n, i) => (
         <g key={n.label} className="pipeline-node" style={{animationDelay: `${0.2 + i * 0.4}s`}}>
-          <circle cx={n.x} cy={n.y} r="7" fill={i === nodes.length - 1 ? '#2DD4BF' : '#12151B'} />
-          <text x={n.x} y={n.y - 16} textAnchor="middle" fontSize="12" fontFamily="Inter" fill="#12151B">{n.label}</text>
+          <circle cx={n.x} cy={n.y} r="7" fill={i === nodes.length - 1 ? 'var(--signal)' : 'var(--ink)'} />
+          <text x={n.x} y={n.y - 16} textAnchor="middle" fontSize="12" fontFamily="Inter" fill="var(--ink)">{n.label}</text>
         </g>
       ))}
     </svg>
@@ -404,9 +438,18 @@ function Footer() {
 }
 
 function App() {
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark);
+    try {
+      localStorage.setItem('nexora-theme', dark ? 'dark' : 'light');
+    } catch (_) {}
+  }, [dark]);
+
   return (
     <div className="font-body">
-      <NavBar />
+      <NavBar dark={dark} onThemeToggle={() => setDark(!dark)} />
       <Hero />
       <Problem />
       <Services />
