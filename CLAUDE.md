@@ -69,27 +69,40 @@ shells; edit that one file.
 
 ### Theming and palette (the part that's easy to break)
 
-The brand color is **Burnt Peach `#E97451`**, used as the page background in light mode.
+The page background is a **linear gradient**, green `hsl(110 75% 60%)` to blue `hsl(220 80% 60%)`, with
+**white text**.
 
-Runtime colors are plain CSS custom properties (`--ink`, `--paper`, `--signal`, `--signal-soft`,
-`--slate`, `--line`) defined under `:root` and `.dark` in `src/index.css`. Tailwind's `@theme` block maps
-them onto design tokens, which is what makes the color utilities re-theme automatically — **the codebase
+Because the ground is a gradient it is not a color token — it is painted on `body` in `src/index.css` from
+`--grad-a` / `--grad-b`, with `background-attachment: fixed` so one gradient spans the page instead of
+repeating per section. `html` carries a matching solid color so the overscroll gutter matches.
+
+The color tokens (`--ink`, `--paper`, `--signal`, `--signal-soft`, `--slate`, `--line`, `--scrim`) live
+under `:root` and `.dark`, and Tailwind's `@theme` block maps them onto design tokens — **the codebase
 deliberately uses no dark-variant classes**. Opacity modifiers resolve through `color-mix`, so the
-variables must hold complete color values, never bare RGB triples.
+variables must hold complete color values.
 
-To add or rename a themed color, edit `:root`, `.dark`, and the `@theme` block.
+Token roles under the gradient:
 
-Burnt Peach is a **mid-tone** (~30% relative luminance), and that constrains everything downstream:
+- `--ink` is **white** and carries all text.
+- `--paper` is a dark navy used only for text sitting *on* white surfaces — the solid CTA buttons, which
+  are `bg-ink text-paper`. It is no longer a page background.
+- `--scrim` is a translucent dark panel. The Problem and About sections and the nav bar use `bg-scrim`
+  so they separate from the page without hiding the gradient behind them.
+- `--signal` and `--signal-soft` are both white. The two-accent split that the previous palette needed no
+  longer applies, but the tokens are kept so components don't need rewiring if a colored accent returns.
 
-- White on it is 2.97:1 and fails AA. Text on the page must be dark; `--ink` is a deep espresso.
-- **There are two accents on purpose.** No single color clears AA on both peach and the dark inverted
-  sections, so `--signal` is for use on `--paper` grounds and `--signal-soft` is for use on `--ink`
-  grounds. Picking the wrong one produces text that is technically themed but unreadable.
-- **Opacity-modified text has a floor.** On peach, tints below roughly 80% drop under 4.5:1. The
-  component tree uses 80/85/90 for body copy; going lower reintroduces the contrast failure.
+**Known accessibility problem.** White on the specified light gradient measures 1.62:1 at the green end,
+2.55:1 at the midpoint, and 3.86:1 at the blue end. WCAG AA needs 4.5:1 for body copy. The green half of
+the page is effectively illegible. This is a deliberate choice by the site owner, recorded here so it is
+not "fixed" by accident:
 
-`scratchpad/contrast.mjs` (regenerate if missing) computes WCAG ratios for every pair, including alpha
-composites. Run it after any palette change rather than eyeballing.
+- The scrim panels reach 3.34:1 over green and 6.61:1 over blue.
+- The dark theme keeps the same two hues at lower lightness (`hsl(110 45% 20%)` / `hsl(220 55% 22%)`) and
+  clears AA at 10.15:1 and 13.40:1. It is the accessible variant.
+- For the light theme to pass, the stops would need to be about `hsl(110 75% 30%)` and `hsl(220 80% 55%)`.
+
+`scratchpad/grad.mjs` (regenerate if missing) computes all of these, including the scrim composites and
+the gradient midpoint. Run it after any change to the gradient stops.
 
 Because the variables are real colors, they are also valid directly in SVG `fill` / `stroke` attributes —
 `PipelineDiagram.jsx` relies on this.
@@ -101,10 +114,10 @@ Tailwind v4 scans markdown as well as source, so utility class names written in 
 stylesheet. `@source not "../*.md"` in `index.css` suppresses that.
 
 Dark mode is applied from two places, and both are needed:
-1. A blocking inline script in `index.html`, before the bundle loads, reads `localStorage['nexora-theme']`
-   (falling back to `prefers-color-scheme`) and sets the class — this prevents a flash of the wrong theme.
-2. `App`'s `useEffect` toggles the class and writes `localStorage` when the user clicks the toggle.
-   `App` seeds its `dark` state by *reading the class off the DOM*, so step 1 is the source of truth on load.
+1. `src/theme-init.js`, injected into every page's `<head>` before first paint, reads
+   `localStorage['nexora-theme']` (falling back to `prefers-color-scheme`) and sets the class.
+2. `useTheme` toggles the class and writes `localStorage` when the user clicks the toggle. It seeds its
+   state by *reading the class off the DOM*, so step 1 is the source of truth on load.
 
 ## Placeholders to be aware of
 

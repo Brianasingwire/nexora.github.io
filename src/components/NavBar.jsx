@@ -11,7 +11,7 @@ const links = [
 export default function NavBar({ dark, onThemeToggle }) {
   const [open, setOpen] = useState(false);
   return (
-    <header className="sticky top-0 z-50 bg-paper/90 backdrop-blur border-b border-ink/25">
+    <header className="sticky top-0 z-50 bg-scrim backdrop-blur border-b border-ink/25">
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
         <a href={section('top')} className="font-display font-bold text-lg tracking-tight">
           Nexora<span className="text-signal">.</span>
@@ -40,7 +40,7 @@ export default function NavBar({ dark, onThemeToggle }) {
         </button>
       </div>
       {open && (
-        <div className="md:hidden border-t border-ink/25 bg-paper px-6 py-4 flex flex-col gap-4 text-sm">
+        <div className="md:hidden border-t border-ink/25 bg-scrim backdrop-blur px-6 py-4 flex flex-col gap-4 text-sm">
           {links.map(l => (
             <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.label}</a>
           ))}

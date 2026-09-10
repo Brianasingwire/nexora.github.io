@@ -14,6 +14,7 @@
   --color-paper: var(--paper);
   --color-signal: var(--signal);
   --color-signal-soft: var(--signal-soft);
+  --color-scrim: var(--scrim);
   --color-slate: var(--slate);
   --color-line: var(--line);
 
@@ -22,51 +23,61 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Palette: Burnt Peach (#E97451)
+   Palette: green -> blue gradient ground, white text.
 
-   Burnt Peach sits at ~30% relative luminance — a mid-tone, not a light tint.
-   That drives every other choice here:
+   The page background is a linear gradient, so it is NOT a color token — it is
+   painted on <body>. --ink is white and carries all text; --paper is the dark
+   value used for text sitting ON white surfaces (the solid CTA buttons).
+   --scrim is a translucent dark panel used where a section needs separation
+   without hiding the gradient behind it.
 
-   - Text on it must be DARK. White is only 2.97:1 against it and fails AA.
-   - The old teal accent (#2DD4BF) was 1.59:1 on peach — effectively invisible —
-     so the accent moved to a deep petrol teal, orange's complement, which keeps
-     the same "cool accent on warm ground" idea while actually being legible.
-   - No single accent can serve both peach and the dark inverted sections, so
-     there are two: `signal` for use ON paper, `signal-soft` for use ON ink.
-
-   Dark mode inverts the relationship rather than restating it: the page becomes
-   espresso and Burnt Peach itself becomes the accent.
-
-   Full color values (not bare RGB triples) so they are also valid wherever a raw
-   color is needed — SVG fill/stroke attributes in particular.
-   Contrast ratios below are against that theme's --paper unless noted.
+   Contrast: white on the light gradient measures 1.62:1 at the green end and
+   3.86:1 at the blue end, both under the 4.5:1 WCAG AA needs for body copy. The
+   dark theme keeps the same two hues at lower lightness, where white clears AA
+   comfortably. See the note in CLAUDE.md.
 --------------------------------------------------------------------------- */
 
 :root {
-  --paper: #e97451;       /* Burnt Peach — the page */
-  --ink: #1b0d08;         /* espresso, text + inverted section grounds  6.39:1 */
-  --signal: #072b28;      /* deep petrol teal, accent on peach          5.11:1 */
-  --signal-soft: #6fd3c6; /* aqua, accent on espresso sections  10.66:1 on ink */
-  --slate: #3e2118;       /* muted cocoa                                4.93:1 */
-  --line: #1b0d08;        /* borders; always used at low opacity */
+  --grad-a: hsl(110 75% 60%);        /* green */
+  --grad-b: hsl(220 80% 60%);        /* blue */
+
+  --ink: hsl(0 0% 100%);             /* all text: white */
+  --paper: hsl(220 45% 12%);         /* text on white surfaces (buttons) */
+  --signal: hsl(0 0% 100%);          /* accents read as white on the gradient */
+  --signal-soft: hsl(0 0% 100%);
+  --slate: hsl(0 0% 100% / 0.78);    /* muted text */
+  --line: hsl(0 0% 100%);
+  --scrim: hsl(220 50% 10% / 0.34);  /* translucent section panels + nav bar */
   color-scheme: light;
 }
 
 .dark {
-  --paper: #1b0d08;       /* espresso — the page */
-  --ink: #f8eae3;         /* warm cream, text + inverted grounds       15.85:1 */
-  --signal: #e97451;      /* Burnt Peach returns as the accent          6.34:1 */
-  --signal-soft: #9a3f1f; /* deep sienna, accent on cream    5.70:1 on ink */
-  --slate: #b99c90;       /* muted warm grey                            7.42:1 */
-  --line: #f8eae3;
+  /* Same two hues, lower lightness — this is the variant where white text passes AA. */
+  --grad-a: hsl(110 45% 20%);
+  --grad-b: hsl(220 55% 22%);
+
+  --ink: hsl(0 0% 100%);
+  --paper: hsl(220 45% 10%);
+  --signal: hsl(0 0% 100%);
+  --signal-soft: hsl(0 0% 100%);
+  --slate: hsl(0 0% 100% / 0.78);
+  --line: hsl(0 0% 100%);
+  --scrim: hsl(220 60% 6% / 0.40);
   color-scheme: dark;
 }
 
 @layer base {
   html { scroll-behavior: smooth; }
-  body { font-family: var(--font-body); }
-  /* Keeps the overscroll gutter Burnt Peach instead of the browser default. */
-  html { background-color: var(--paper); }
+  /* Solid fallback so the overscroll gutter matches rather than showing white. */
+  html { background-color: var(--grad-b); }
+  body {
+    font-family: var(--font-body);
+    min-height: 100vh;
+    background-color: var(--grad-b);
+    background-image: linear-gradient(160deg, var(--grad-a) 0%, var(--grad-b) 100%);
+    /* Fixed so one gradient spans the page instead of repeating per section. */
+    background-attachment: fixed;
+  }
 }
 
 @keyframes drawline {
