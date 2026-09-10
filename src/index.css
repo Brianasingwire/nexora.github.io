@@ -1,14 +1,19 @@
 @import "tailwindcss";
 
+/* Docs mention utility class names in prose; without this Tailwind scans them
+   and compiles dead rules into the stylesheet. */
+@source not "../*.md";
+
 /* Class-based dark mode: the pre-paint script in index.html puts .dark on <html>. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* Design tokens point at the runtime variables below, so a .dark swap re-themes
-   every utility (bg-ink, text-ink/70, border-ink/10, …) with no dark: variants. */
+   every utility (bg-ink, text-ink/85, border-ink/25, …) with no dark: variants. */
 @theme {
   --color-ink: var(--ink);
   --color-paper: var(--paper);
   --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
   --color-slate: var(--slate);
   --color-line: var(--line);
 
@@ -16,29 +21,52 @@
   --font-body: "Inter", sans-serif;
 }
 
-/* Full color values (not bare RGB triples) so they are also valid wherever a raw
-   color is needed — SVG fill/stroke attributes in particular. */
+/* ---------------------------------------------------------------------------
+   Palette: Burnt Peach (#E97451)
+
+   Burnt Peach sits at ~30% relative luminance — a mid-tone, not a light tint.
+   That drives every other choice here:
+
+   - Text on it must be DARK. White is only 2.97:1 against it and fails AA.
+   - The old teal accent (#2DD4BF) was 1.59:1 on peach — effectively invisible —
+     so the accent moved to a deep petrol teal, orange's complement, which keeps
+     the same "cool accent on warm ground" idea while actually being legible.
+   - No single accent can serve both peach and the dark inverted sections, so
+     there are two: `signal` for use ON paper, `signal-soft` for use ON ink.
+
+   Dark mode inverts the relationship rather than restating it: the page becomes
+   espresso and Burnt Peach itself becomes the accent.
+
+   Full color values (not bare RGB triples) so they are also valid wherever a raw
+   color is needed — SVG fill/stroke attributes in particular.
+   Contrast ratios below are against that theme's --paper unless noted.
+--------------------------------------------------------------------------- */
+
 :root {
-  --ink: rgb(18 21 27);
-  --paper: rgb(245 244 240);
-  --signal: rgb(45 212 191);
-  --slate: rgb(139 143 163);
-  --line: rgb(34 38 47);
+  --paper: #e97451;       /* Burnt Peach — the page */
+  --ink: #1b0d08;         /* espresso, text + inverted section grounds  6.39:1 */
+  --signal: #072b28;      /* deep petrol teal, accent on peach          5.11:1 */
+  --signal-soft: #6fd3c6; /* aqua, accent on espresso sections  10.66:1 on ink */
+  --slate: #3e2118;       /* muted cocoa                                4.93:1 */
+  --line: #1b0d08;        /* borders; always used at low opacity */
   color-scheme: light;
 }
 
 .dark {
-  --ink: rgb(245 244 240);
-  --paper: rgb(18 21 27);
-  --signal: rgb(94 234 212);
-  --slate: rgb(166 170 188);
-  --line: rgb(218 220 228);
+  --paper: #1b0d08;       /* espresso — the page */
+  --ink: #f8eae3;         /* warm cream, text + inverted grounds       15.85:1 */
+  --signal: #e97451;      /* Burnt Peach returns as the accent          6.34:1 */
+  --signal-soft: #9a3f1f; /* deep sienna, accent on cream    5.70:1 on ink */
+  --slate: #b99c90;       /* muted warm grey                            7.42:1 */
+  --line: #f8eae3;
   color-scheme: dark;
 }
 
 @layer base {
   html { scroll-behavior: smooth; }
   body { font-family: var(--font-body); }
+  /* Keeps the overscroll gutter Burnt Peach instead of the browser default. */
+  html { background-color: var(--paper); }
 }
 
 @keyframes drawline {

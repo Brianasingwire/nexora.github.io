@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
-    <footer className="border-t border-ink/10">
-      <div className="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between gap-4 text-sm text-ink/60">
+    <footer className="border-t border-ink/25">
+      <div className="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between gap-4 text-sm text-ink/80">
         <div>
           <p className="font-display text-ink font-semibold">Nexora</p>
           <p>AI Automation & IT Solutions</p>

@@ -5,7 +5,7 @@ export default function Problem() {
         <h2 className="font-display text-2xl md:text-3xl font-semibold mb-4 max-w-xl">
           Manual follow-up is costing you customers.
         </h2>
-        <p className="text-paper/70 max-w-xl">
+        <p className="text-paper/85 max-w-xl">
           Every unanswered lead, every delayed response, every manual data entry step is a chance for a customer to go elsewhere. Most businesses don't have a staffing problem — they have a systems problem.
         </p>
       </div>

@@ -1,8 +1,8 @@
 function CaseStudy({ title, problem, solution, result }) {
   return (
-    <div className="border-t border-ink/10 py-10 grid md:grid-cols-[1fr_2fr] gap-6">
+    <div className="border-t border-ink/25 py-10 grid md:grid-cols-[1fr_2fr] gap-6">
       <h3 className="font-display text-lg font-semibold">{title}</h3>
-      <div className="space-y-3 text-sm text-ink/75 max-w-2xl">
+      <div className="space-y-3 text-sm text-ink/85 max-w-2xl">
         <p><span className="text-ink font-medium">The problem: </span>{problem}</p>
         <p><span className="text-ink font-medium">The solution: </span>{solution}</p>
         <p><span className="text-ink font-medium">The result: </span>{result}</p>
@@ -15,7 +15,7 @@ export default function Work() {
   return (
     <section id="work" className="max-w-6xl mx-auto px-6 py-20">
       <h2 className="font-display text-3xl font-semibold mb-2">Real Systems, Real Results</h2>
-      <p className="text-ink/60 mb-4 max-w-xl">A few of the systems we've built. More case studies coming as we take on new clients.</p>
+      <p className="text-ink/80 mb-4 max-w-xl">A few of the systems we've built. More case studies coming as we take on new clients.</p>
 
       {/* CASE STUDY 1 — rewrite with real client details once confirmed shareable */}
       <CaseStudy

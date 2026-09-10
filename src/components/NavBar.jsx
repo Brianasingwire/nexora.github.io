@@ -10,18 +10,18 @@ const links = [
 export default function NavBar({ dark, onThemeToggle }) {
   const [open, setOpen] = useState(false);
   return (
-    <header className="sticky top-0 z-50 bg-paper/90 backdrop-blur border-b border-ink/10">
+    <header className="sticky top-0 z-50 bg-paper/90 backdrop-blur border-b border-ink/25">
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
         <a href="#top" className="font-display font-bold text-lg tracking-tight">
           Nexora<span className="text-signal">.</span>
         </a>
-        <nav className="hidden md:flex items-center gap-8 text-sm text-ink/80">
+        <nav className="hidden md:flex items-center gap-8 text-sm text-ink/90">
           {links.map(l => (
             <a key={l.href} href={l.href} className="hover:text-ink transition-colors">{l.label}</a>
           ))}
         </nav>
         <div className="hidden md:flex items-center gap-3">
-          <button type="button" onClick={onThemeToggle} aria-label={`Switch to ${dark ? 'light' : 'dark'} mode`} aria-pressed={dark} className="w-9 h-9 inline-flex items-center justify-center border border-ink/20 rounded-sm hover:bg-ink/10 transition-colors">
+          <button type="button" onClick={onThemeToggle} aria-label={`Switch to ${dark ? 'light' : 'dark'} mode`} aria-pressed={dark} className="w-9 h-9 inline-flex items-center justify-center border border-ink/35 rounded-sm hover:bg-ink/10 transition-colors">
             {dark ? (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></svg>
             ) : (
@@ -39,11 +39,11 @@ export default function NavBar({ dark, onThemeToggle }) {
         </button>
       </div>
       {open && (
-        <div className="md:hidden border-t border-ink/10 bg-paper px-6 py-4 flex flex-col gap-4 text-sm">
+        <div className="md:hidden border-t border-ink/25 bg-paper px-6 py-4 flex flex-col gap-4 text-sm">
           {links.map(l => (
             <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.label}</a>
           ))}
-          <button type="button" onClick={onThemeToggle} className="text-left text-ink/70">Switch to {dark ? 'light' : 'dark'} mode</button>
+          <button type="button" onClick={onThemeToggle} className="text-left text-ink/85">Switch to {dark ? 'light' : 'dark'} mode</button>
           <a href="#contact" onClick={() => setOpen(false)} className="font-medium text-signal">Book a Free Audit →</a>
         </div>
       )}

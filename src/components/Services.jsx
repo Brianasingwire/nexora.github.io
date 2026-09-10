@@ -1,14 +1,14 @@
 function ServiceRow({ title, status, available, description, items }) {
   return (
-    <div className={`grid md:grid-cols-[1fr_2fr] gap-6 py-8 border-t border-ink/10 ${available ? '' : 'opacity-60'}`}>
+    <div className={`grid md:grid-cols-[1fr_2fr] gap-6 py-8 border-t border-ink/25 ${available ? '' : 'opacity-80'}`}>
       <div>
         <h3 className="font-display text-xl font-semibold mb-1">{title}</h3>
         <p className={`text-sm ${available ? 'text-signal' : 'text-slate'}`}>{status}</p>
       </div>
       <div>
-        <p className="text-ink/75 mb-3 max-w-lg">{description}</p>
+        <p className="text-ink/85 mb-3 max-w-lg">{description}</p>
         {items && (
-          <ul className="text-sm text-ink/65 space-y-1">
+          <ul className="text-sm text-ink/80 space-y-1">
             {items.map(it => <li key={it}>— {it}</li>)}
           </ul>
         )}
@@ -22,7 +22,7 @@ export default function Services() {
     <section id="services" className="max-w-6xl mx-auto px-6 py-20">
       <div className="max-w-xl mb-6">
         <h2 className="font-display text-3xl font-semibold mb-3">What We Do</h2>
-        <p className="text-ink/70">
+        <p className="text-ink/85">
           We're an IT solutions company built to grow with you — starting with AI automation, expanding into the infrastructure and web presence you'll need next.
         </p>
       </div>

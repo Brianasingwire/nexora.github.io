@@ -6,7 +6,7 @@ const steps = [
 
 export default function Process() {
   return (
-    <section className="border-t border-ink/10">
+    <section className="border-t border-ink/25">
       <div className="max-w-6xl mx-auto px-6 py-20">
         <h2 className="font-display text-3xl font-semibold mb-10">How We Work</h2>
         <div className="grid md:grid-cols-3 gap-10">
@@ -14,7 +14,7 @@ export default function Process() {
             <div key={s.n}>
               <p className="font-display text-signal text-sm mb-2">{s.n}</p>
               <h3 className="font-display text-lg font-semibold mb-2">{s.title}</h3>
-              <p className="text-ink/70 text-sm leading-relaxed">{s.body}</p>
+              <p className="text-ink/85 text-sm leading-relaxed">{s.body}</p>
             </div>
           ))}
         </div>
