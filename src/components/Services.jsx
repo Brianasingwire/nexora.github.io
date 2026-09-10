@@ -19,9 +19,9 @@ function ServiceRow({ title, status, available, description, items }) {
 
 export default function Services() {
   return (
-    <section id="services" className="max-w-6xl mx-auto px-6 py-20">
+    <section className="w-full max-w-6xl mx-auto px-6 pt-16 pb-24">
       <div className="max-w-xl mb-6">
-        <h2 className="font-display text-3xl font-semibold mb-3">What We Do</h2>
+        <h1 className="font-display text-4xl md:text-5xl font-semibold leading-tight mb-4">What We Do</h1>
         <p className="text-ink/85">
           We're an IT solutions company built to grow with you — starting with AI automation, expanding into the infrastructure and web presence you'll need next.
         </p>

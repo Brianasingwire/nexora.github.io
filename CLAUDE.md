@@ -34,10 +34,38 @@ named `brianasingwire.github.io`). It is therefore served from `/nexora.github.i
 
 ## Architecture
 
-`index.html` is a thin shell: meta tags, Google Fonts, a pre-paint theme script, `#root`, and the module
-entry. Everything else lives in `src/` — `main.jsx` mounts `App.jsx`, which composes one component per page
-section from `src/components/` in render order. Sections are self-contained: their copy and data live as
-literals inside their own file, not in shared config.
+**This is a multi-page app, not an SPA — there is no router.** Each page is a separate HTML entry
+declared in `vite.config.js` under `build.rollupOptions.input`, and Vite emits a separate bundle per
+page sharing a common vendor chunk:
+
+| Entry | Mounts | URL |
+|---|---|---|
+| `index.html` | `src/main.jsx` → `App.jsx` | `/` |
+| `services/index.html` | `src/services-main.jsx` → `Page` + `Services` | `/services/` |
+| `work/index.html` | `src/work-main.jsx` → `Page` + `Work` | `/work/` |
+| `about/index.html` | `src/about-main.jsx` → `Page` + `About` | `/about/` |
+| `contact/index.html` | `src/contact-main.jsx` → `Page` + `Contact` | `/contact/` |
+
+That choice is deliberate: GitHub Pages serves static files, so real pages give working deep links and
+refreshes with no 404 fallback shim, and the contact page doesn't ship the home page's code. Adding a page
+means a new HTML shell, an `src/<name>-main.jsx` entry, and a line in `rollupOptions.input` — not a
+route table. Every page except home wraps its content in `src/Page.jsx` (nav + main + footer + theme);
+home composes its own sections because it has many.
+
+Each HTML shell is thin: meta tags, Google Fonts, the pre-paint theme script, `#root`, and the module
+entry. Page components live in `src/`, section components in `src/components/`. Sections are
+self-contained: their copy and data live as literals inside their own file.
+
+**All inter-page links come from `src/links.js`**, which builds hrefs from `import.meta.env.BASE_URL`.
+Never hand-write a bare `#section` href in a component — it would break when followed from `/contact/`,
+and it would break again if `base` changes. `section(id)` resolves to a same-document scroll on the home page
+and a navigation-plus-scroll from anywhere else. `#top` is the only home-page anchor left — Services,
+Work, About and Contact are all their own pages.
+
+The pre-paint theme script lives in `src/theme-init.js` and is injected into every page's `<head>` by the
+`inject-theme-script` plugin in `vite.config.js`. It cannot be bundled — it has to run before first paint,
+before the module scripts — so it is read as raw text and inlined. Don't paste copies into the HTML
+shells; edit that one file.
 
 ### Theming and palette (the part that's easy to break)
 
@@ -83,7 +111,8 @@ Dark mode is applied from two places, and both are needed:
 The `EDIT GUIDE` comment at the top of `index.html` lists what's still stubbed. Currently unresolved:
 
 - `hello@nexora.io` is a placeholder address.
-- "Book a Free Audit" buttons point at `#contact`, pending a real booking link.
-- The contact form has **no backend** — `handleSubmit` only calls `setSubmitted(true)` locally. Wiring a
-  form service goes in that function.
+- "Book a Free Audit" buttons point at the `/contact/` page. Swapping to Calendly is a one-line change
+  to `contact` in `src/links.js`.
+- The contact form still has **no backend** — `handleSubmit` in `Contact.jsx` only calls
+  `setSubmitted(true)` locally. Wiring a form service goes in that function.
 - Case studies are marked with `{/* CASE STUDY n */}` comments in `Work.jsx` and need real client details.

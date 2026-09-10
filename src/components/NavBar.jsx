@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { about, contact, section, services, work } from '../links.js';
 
 const links = [
-  { href: '#services', label: 'Services' },
-  { href: '#work', label: 'Work' },
-  { href: '#about', label: 'About' },
-  { href: '#contact', label: 'Contact' },
+  { href: services, label: 'Services' },
+  { href: work, label: 'Work' },
+  { href: about, label: 'About' },
+  { href: contact, label: 'Contact' },
 ];
 
 export default function NavBar({ dark, onThemeToggle }) {
@@ -12,7 +13,7 @@ export default function NavBar({ dark, onThemeToggle }) {
   return (
     <header className="sticky top-0 z-50 bg-paper/90 backdrop-blur border-b border-ink/25">
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-        <a href="#top" className="font-display font-bold text-lg tracking-tight">
+        <a href={section('top')} className="font-display font-bold text-lg tracking-tight">
           Nexora<span className="text-signal">.</span>
         </a>
         <nav className="hidden md:flex items-center gap-8 text-sm text-ink/90">
@@ -28,7 +29,7 @@ export default function NavBar({ dark, onThemeToggle }) {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" /></svg>
             )}
           </button>
-          <a href="#contact" className="text-sm font-medium bg-ink text-paper px-4 py-2 rounded-sm hover:bg-ink/85 transition-colors">
+          <a href={contact} className="text-sm font-medium bg-ink text-paper px-4 py-2 rounded-sm hover:bg-ink/85 transition-colors">
             Book a Free Audit
           </a>
         </div>
@@ -44,7 +45,7 @@ export default function NavBar({ dark, onThemeToggle }) {
             <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.label}</a>
           ))}
           <button type="button" onClick={onThemeToggle} className="text-left text-ink/85">Switch to {dark ? 'light' : 'dark'} mode</button>
-          <a href="#contact" onClick={() => setOpen(false)} className="font-medium text-signal">Book a Free Audit →</a>
+          <a href={contact} onClick={() => setOpen(false)} className="font-medium text-signal">Book a Free Audit →</a>
         </div>
       )}
     </header>

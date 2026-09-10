@@ -1,3 +1,12 @@
+import { about, contact, services, work } from '../links.js';
+
+const links = [
+  { href: services, label: 'Services' },
+  { href: work, label: 'Work' },
+  { href: about, label: 'About' },
+  { href: contact, label: 'Contact' },
+];
+
 export default function Footer() {
   return (
     <footer className="border-t border-ink/25">
@@ -7,10 +16,9 @@ export default function Footer() {
           <p>AI Automation & IT Solutions</p>
         </div>
         <div className="flex gap-6">
-          <a href="#services" className="hover:text-ink">Services</a>
-          <a href="#work" className="hover:text-ink">Work</a>
-          <a href="#about" className="hover:text-ink">About</a>
-          <a href="#contact" className="hover:text-ink">Contact</a>
+          {links.map(l => (
+            <a key={l.href} href={l.href} className="hover:text-ink">{l.label}</a>
+          ))}
         </div>
         <p>© 2026 Nexora. All rights reserved.</p>
       </div>

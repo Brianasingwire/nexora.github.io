@@ -14,9 +14,9 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="max-w-6xl mx-auto px-6 py-20">
+    <section className="max-w-6xl mx-auto px-6 pt-16 pb-24">
       <div className="max-w-xl mb-10">
-        <h2 className="font-display text-3xl font-semibold mb-3">Let's Find What You Can Automate</h2>
+        <h1 className="font-display text-4xl md:text-5xl font-semibold leading-tight mb-4">Let's Find What You Can Automate</h1>
         <p className="text-ink/85">
           Book a free 30-minute audit call. We'll look at your current workflow and tell you exactly where automation would save you the most time — no obligation.
         </p>

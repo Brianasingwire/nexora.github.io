@@ -13,24 +13,14 @@
   2. Contact email: search for "hello@nexora.io" and replace with your Google Workspace address.
   3. Case studies: see src/components/Work.jsx — rewrite once you confirm what's shareable.
   4. Logo: currently a text wordmark (the "N." mark in src/components/NavBar.jsx) — swap for an <img> once you have a logo file.
-  5. Booking link: the "Book a Free Automation Audit" buttons currently point to "#contact" (scrolls to the form).
-     Replace href="#contact" with your Calendly link once you have one.
+  5. Booking link: every "Book a Free Audit" button points at the /contact/ page via
+     src/links.js. To send people to Calendly instead, change `contact` in that one file.
 -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-<script>
-  // Runs before first paint so the correct theme is applied with no flash.
-  // App.jsx seeds its state by reading the class this sets — keep the storage key in sync.
-  try {
-    const savedTheme = localStorage.getItem('nexora-theme');
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-    }
-  } catch (_) {}
-</script>
 </head>
 <body class="bg-paper text-ink">
 <div id="root"></div>

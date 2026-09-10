@@ -13,9 +13,9 @@ function CaseStudy({ title, problem, solution, result }) {
 
 export default function Work() {
   return (
-    <section id="work" className="max-w-6xl mx-auto px-6 py-20">
-      <h2 className="font-display text-3xl font-semibold mb-2">Real Systems, Real Results</h2>
-      <p className="text-ink/80 mb-4 max-w-xl">A few of the systems we've built. More case studies coming as we take on new clients.</p>
+    <section className="w-full max-w-6xl mx-auto px-6 pt-16 pb-24">
+      <h1 className="font-display text-4xl md:text-5xl font-semibold leading-tight mb-4">Real Systems, Real Results</h1>
+      <p className="text-ink/85 mb-6 max-w-xl">A few of the systems we've built. More case studies coming as we take on new clients.</p>
 
       {/* CASE STUDY 1 — rewrite with real client details once confirmed shareable */}
       <CaseStudy

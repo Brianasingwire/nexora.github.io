@@ -1,4 +1,5 @@
 import PipelineDiagram from './PipelineDiagram.jsx';
+import { contact, services } from '../links.js';
 
 export default function Hero() {
   return (
@@ -12,10 +13,10 @@ export default function Hero() {
           Nexora builds AI-powered automation systems that capture, qualify, and follow up with your leads — so nothing falls through the cracks and your team focuses on closing, not admin.
         </p>
         <div className="flex flex-wrap items-center gap-6">
-          <a href="#contact" className="bg-ink text-paper px-6 py-3 rounded-sm font-medium hover:bg-ink/85 transition-colors">
+          <a href={contact} className="bg-ink text-paper px-6 py-3 rounded-sm font-medium hover:bg-ink/85 transition-colors">
             Book a Free Automation Audit
           </a>
-          <a href="#services" className="text-ink/85 hover:text-ink text-sm underline underline-offset-4">
+          <a href={services} className="text-ink/85 hover:text-ink text-sm underline underline-offset-4">
             See how it works
           </a>
         </div>
