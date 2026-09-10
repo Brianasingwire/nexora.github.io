@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+/* Class-based dark mode: the pre-paint script in index.html puts .dark on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design tokens point at the runtime variables below, so a .dark swap re-themes
+   every utility (bg-ink, text-ink/70, border-ink/10, …) with no dark: variants. */
+@theme {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-signal: var(--signal);
+  --color-slate: var(--slate);
+  --color-line: var(--line);
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+/* Full color values (not bare RGB triples) so they are also valid wherever a raw
+   color is needed — SVG fill/stroke attributes in particular. */
+:root {
+  --ink: rgb(18 21 27);
+  --paper: rgb(245 244 240);
+  --signal: rgb(45 212 191);
+  --slate: rgb(139 143 163);
+  --line: rgb(34 38 47);
+  color-scheme: light;
+}
+
+.dark {
+  --ink: rgb(245 244 240);
+  --paper: rgb(18 21 27);
+  --signal: rgb(94 234 212);
+  --slate: rgb(166 170 188);
+  --line: rgb(218 220 228);
+  color-scheme: dark;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-body); }
+}
+
+@keyframes drawline {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+.pipeline-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawline 1.8s ease forwards;
+  animation-delay: 0.3s;
+}
+
+@keyframes nodepop {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.pipeline-node {
+  opacity: 0;
+  animation: nodepop 0.4s ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pipeline-line, .pipeline-node { animation: none; opacity: 1; stroke-dashoffset: 0; }
+}
