@@ -1,0 +1,15 @@
+#!/bin/sh
+# Blocks any push that introduces secrets. Enabled by `npm install` (the
+# "prepare" script sets core.hooksPath to .githooks).
+#
+# Scans every commit being pushed, so a secret added and later deleted within
+# the push is still caught. Bypass once for a verified false positive with:
+#   git push --no-verify
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-push: node not found, so the secret scan cannot run. Push blocked." >&2
+  echo "          Push from a shell with Node on PATH, or bypass with --no-verify." >&2
+  exit 1
+fi
+
+exec node "$(git rev-parse --show-toplevel)/scripts/scan-secrets.mjs" pre-push "$@"

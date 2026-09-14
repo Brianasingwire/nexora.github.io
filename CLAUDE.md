@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A single-page marketing site for Nexora (AI automation / IT solutions), deployed to GitHub Pages from
+A five-page marketing site for Nexora (AI automation / IT solutions), deployed to GitHub Pages from
 `https://github.com/Brianasingwire/nexora.github.io`. React 18 + Vite + Tailwind CSS v4.
 
 ## Commands
@@ -118,6 +118,35 @@ Dark mode is applied from two places, and both are needed:
    `localStorage['nexora-theme']` (falling back to `prefers-color-scheme`) and sets the class.
 2. `useTheme` toggles the class and writes `localStorage` when the user clicks the toggle. It seeds its
    state by *reading the class off the DOM*, so step 1 is the source of truth on load.
+
+## Secrets and pushing
+
+Every push is gated by a secret scan. **Before any `git push`, run the `security-reviewer` agent**
+(`.claude/agents/security-reviewer.md`) and only push on a **SAFE TO PUSH** verdict, or after the owner
+has confirmed any items it marks as needing confirmation.
+
+- `.githooks/pre-push` runs `scripts/scan-secrets.mjs` and blocks the push on any finding. It scans the
+  patch of *every commit being pushed*, not the net diff, so a secret added and then deleted within the
+  push is still caught. `npm install` enables it via the `prepare` script (`core.hooksPath`).
+- The scanner is deterministic regex matching — no model, no network — because it is the blocking gate.
+  The agent layers judgment on top: real key vs. placeholder, publishable vs. secret, and what Vite bakes
+  into the bundle. The agent runs the scanner itself as its first step.
+- Manual scans: `npm run scan:secrets` (tracked tree), or
+  `node scripts/scan-secrets.mjs range origin/main..HEAD` / `dir dist`.
+- **Never use `git push --no-verify`.** That bypass exists for the owner to use on a false positive they
+  have personally verified. Silence a confirmed false positive with a `secret-scan:allow` comment on that
+  line instead, so the exception is visible in review.
+- The scanner redacts matched values in its output. Keep it that way — findings get pasted into chat and
+  CI logs.
+
+Why this matters more here than usual: the site is static and the repo is almost certainly public, so
+there is nowhere private to put a credential. Anything in `src/` is served to every visitor, any
+`VITE_*` variable is inlined into `dist/` at build time, and anything committed is published even if later
+deleted. `.env` and `.env.*` are gitignored; `.env.example` is allowed.
+
+Keys designed to be public are fine in client code — relevant when wiring the contact form. Web3Forms
+access keys, Formspree form IDs, Turnstile *site* keys, and Stripe `pk_` keys are safe. Their secret
+counterparts are not.
 
 ## Placeholders to be aware of
 

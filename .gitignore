@@ -2,3 +2,9 @@ node_modules/
 dist/
 *.local
 .DS_Store
+
+# Environment files. Vite reads these, and any VITE_* value is inlined into the
+# public bundle — but a committed .env leaks every variable via the repo itself.
+.env
+.env.*
+!.env.example
