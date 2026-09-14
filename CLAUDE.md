@@ -69,19 +69,23 @@ composition, spacing, type scale and component patterns, and its source styleshe
 values. Both reference files were deleted once their contents were captured here and in `src/index.css`,
 so this section is now the record of what was taken.
 
-**The site has a single, dark-first theme, and deliberately no light/dark toggle.** Pulseflow has no dark
-mode. A toggle existed briefly after the redesign, but with most sections permanently ink it changed
-nothing on the Work, About and Contact pages and looked broken, so it was removed along with its pre-paint
-script and hook. Don't reintroduce a toggle unless the dark sections get a genuine light treatment too.
+**The site has a single, dark-first theme with no white backgrounds anywhere.** Two decisions by the
+owner, each deliberate:
+
+- **No light/dark toggle.** Pulseflow has no dark mode. A toggle existed briefly after the redesign, but
+  with most sections permanently ink it changed nothing on the Work, About and Contact pages and looked
+  broken, so it was removed along with its pre-paint script and hook.
+- **No white sections.** Pulseflow alternates ink sections with white ones. The owner asked for none, so
+  every section on every page is ink (or the pine band), and the white-surface tokens were removed. Don't
+  add a white or light-background section back.
 
 Values, all verbatim from the Pulseflow stylesheet and kept in oklch as that file required:
 
-- `--ink` `oklch(0.2177 0.0356 251.2935)` (≈ `#0D1B2A`) — a **deep navy**, not a green-black. Page ground
-  and every dark section. White text sits on it.
+- `--ink` `oklch(0.2177 0.0356 251.2935)` (≈ `#0D1B2A`) — a **deep navy**, not a green-black. The ground
+  of every section. White text sits on it.
 - `--pine` `oklch(0.3484 0.0547 163.3594)` (≈ `#1B4332`) — the band behind Problem, and glow orbs.
-- `--mint` `oklch(0.778 0.1454 169.7485)` (≈ `#2DD4A8`) — primary buttons (ink text), eyebrows, accents
-  on ink.
-- `--mintbright` `oklch(0.9041 0.1584 158.6761)` (≈ `#73FFB8`) — hovers, the hero pill, highlighted rows.
+- `--mint` `oklch(0.778 0.1454 169.7485)` (≈ `#2DD4A8`) — primary buttons (ink text), eyebrows, accents.
+- `--mintbright` `oklch(0.9041 0.1584 158.6761)` (≈ `#73FFB8`) — hovers, pills, step badges, highlights.
 - Fonts: **Sora** (`--font-display`) and **Manrope** (`--font-body`), loaded from Google Fonts in each HTML
   shell.
 - Radius: one base, `--radius: 0.625rem`, with `rounded-md` … `rounded-3xl` derived from it in `@theme`.
@@ -92,25 +96,25 @@ Values, all verbatim from the Pulseflow stylesheet and kept in oklch as that fil
 Tokens live under `:root` in `src/index.css` and are mapped into Tailwind's `@theme`. Opacity modifiers
 resolve through `color-mix`, so the variables must hold complete color values.
 
-- `--surface` / `--on-surface` — the light sections (Process, the CTA wrapper, Services): white with ink text.
-- `--accent-on-surface` — accent text on light surfaces: pine.
+**How separation works without white sections.** Cards and panels are *glass* on ink: a near-transparent
+white fill (`bg-white/[0.03]`–`[0.04]`), a faint mint border (`border-mint/15`, `/20`–`/30` for emphasis),
+and blurred mint and pine glow orbs behind content. The pine band (Problem) is the only section with a
+different ground. Pulseflow's closing panel was ink on white; here it is a glass panel with a mint border
+and inner glow, since an ink panel on an ink section would disappear.
 
-Composition rule: **dark sections are ink** (hero, Work, About, Contact, the CTA panel, nav, footer);
-**light sections use `surface`**. Prefer the surface tokens over literal `bg-white` / `text-ink` so light
-sections stay changeable in one place.
+Deliberate deviations from Pulseflow:
 
-Deliberate deviations from Pulseflow, all for contrast:
-
-- Pulseflow sets small mint text on white: 1.89:1. Accent text on light surfaces uses
-  `accent-on-surface` (pine, 11.08:1) instead.
-- Pulseflow uses `white/35`–`white/40` for fine print on ink (3.20–3.78:1) and `ink/55` for card body on
-  white (3.91:1). The floor here is `white/55` on ink and `on-surface/70` on surfaces.
-- Pulseflow's stats band and stat cards show metrics (throughput, team size). Nexora has no real figures,
-  so those slots carry the problem statement and facts instead. Don't fill them with invented numbers.
+- **No white sections** (above). This also removes Pulseflow's mint-text-on-white problem (1.89:1), which
+  the earlier version worked around with pine accents.
+- **A floor on faint text.** Pulseflow uses `white/35`–`white/40` for fine print on ink (3.20–3.78:1). The
+  floor here is `white/55` (6.00:1).
+- **No invented figures.** Pulseflow's stats band and stat cards show metrics (throughput, team size).
+  Nexora has no real figures, so those slots carry the problem statement and facts instead. Don't fill them
+  with invented numbers.
 
 Every text pairing clears WCAG AA; the lowest is `white/55` on ink at 6.00:1. `scratchpad/pulse.mjs`
-(regenerate if missing) converts the oklch values and measures every pairing. Run it after any palette
-change.
+(regenerate if missing) converts the oklch values and measures pairings, including text over the glass
+fills. Run it after any palette change.
 
 The Pulseflow stylesheet also defined a full set of UI-library tokens (`background`, `primary`, `sidebar`,
 `chart-*`…). Pulseflow's page never uses them, so they were not carried over.

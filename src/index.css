@@ -9,9 +9,6 @@
   --color-pine: var(--pine);
   --color-mint: var(--mint);
   --color-mintbright: var(--mintbright);
-  --color-surface: var(--surface);
-  --color-on-surface: var(--on-surface);
-  --color-accent-on-surface: var(--accent-on-surface);
 
   --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
@@ -41,9 +38,8 @@
    required. Ink is a deep navy (hue 251), not a green-black.
 
    Composition: the site is dark-first with a single theme, like Pulseflow.
-   Dark sections (hero, about, work, contact, the CTA panel, nav, footer) are
-   ink with white text. Light sections use --surface / --on-surface, which are
-   white with ink text.
+   Every section on every page is ink (or the pine band) with white text; there
+   are no white sections. Pulseflow's white sections were deliberately dropped.
 --------------------------------------------------------------------------- */
 
 :root {
@@ -53,12 +49,6 @@
   --pine: oklch(0.3484 0.0547 163.3594);        /* the band behind Problem, glow orbs */
   --mint: oklch(0.778 0.1454 169.7485);         /* primary buttons, accents on ink */
   --mintbright: oklch(0.9041 0.1584 158.6761);  /* hovers, pills, highlights */
-
-  --surface: #ffffff;
-  --on-surface: var(--ink);
-  /* Pulseflow sets small mint text on white; mint on white is unreadable, so
-     accent text on light surfaces uses pine instead. */
-  --accent-on-surface: var(--pine);
   color-scheme: dark;
 }
 

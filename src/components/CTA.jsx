@@ -1,13 +1,14 @@
 import { contact, services } from '../links.js';
 
-// The home page's closing ask, in the style of Pulseflow's contact panel: an ink
-// panel with glow, set on a light surface. Follows Process (also a light surface),
-// so it has no top padding of its own.
+// The home page's closing ask. Pulseflow sets an ink panel on a white section;
+// with no white sections on this site, the panel is glass on ink instead — a mint
+// border and inner glow keep it reading as a distinct object. Follows Process
+// (also ink), so it has no top padding of its own.
 export default function CTA() {
   return (
-    <section className="bg-surface">
+    <section className="bg-ink">
       <div className="mx-auto max-w-7xl px-6 pb-24 lg:pb-32">
-        <div className="relative overflow-hidden rounded-3xl bg-ink p-8 ring-1 ring-on-surface/10 sm:p-14">
+        <div className="relative overflow-hidden rounded-3xl border border-mint/20 bg-white/[0.03] p-8 ring-1 ring-white/5 sm:p-14">
           <div className="pointer-events-none absolute -top-24 right-0 size-[360px] rounded-full bg-mint/15 blur-[100px]" aria-hidden="true" />
           <div className="pointer-events-none absolute bottom-0 left-1/4 size-[260px] rounded-full bg-mintbright/10 blur-[90px]" aria-hidden="true" />
           <div className="relative max-w-xl">
