@@ -69,43 +69,55 @@ shells; edit that one file.
 
 ### Theming and palette (the part that's easy to break)
 
-The page background is a **linear gradient**, green `hsl(110 75% 60%)` to blue `hsl(220 80% 60%)`, with
-**white text**.
+The design system is taken from a reference design, **Pulseflow**: its saved page supplied the
+composition, spacing, type scale and component patterns, and its source stylesheet supplied the exact
+values. Both reference files were deleted once their contents were captured here and in `src/index.css`,
+so this section is now the record of what was taken.
 
-Because the ground is a gradient it is not a color token — it is painted on `body` in `src/index.css` from
-`--grad-a` / `--grad-b`, with `background-attachment: fixed` so one gradient spans the page instead of
-repeating per section. `html` carries a matching solid color so the overscroll gutter matches.
+Values, all verbatim from the Pulseflow stylesheet and kept in oklch as that file required:
 
-The color tokens (`--ink`, `--paper`, `--signal`, `--signal-soft`, `--slate`, `--line`, `--scrim`) live
-under `:root` and `.dark`, and Tailwind's `@theme` block maps them onto design tokens — **the codebase
-deliberately uses no dark-variant classes**. Opacity modifiers resolve through `color-mix`, so the
-variables must hold complete color values.
+- `--ink` `oklch(0.2177 0.0356 251.2935)` (≈ `#0D1B2A`) — a **deep navy**, not a green-black. Page ground
+  and every dark section. White text sits on it.
+- `--pine` `oklch(0.3484 0.0547 163.3594)` (≈ `#1B4332`) — the band behind Problem, and glow orbs.
+- `--mint` `oklch(0.778 0.1454 169.7485)` (≈ `#2DD4A8`) — primary buttons (ink text), eyebrows, accents
+  on ink.
+- `--mintbright` `oklch(0.9041 0.1584 158.6761)` (≈ `#73FFB8`) — hovers, the hero pill, highlighted rows.
+- Fonts: **Sora** (`--font-display`) and **Manrope** (`--font-body`), loaded from Google Fonts in each HTML
+  shell.
+- Radius: one base, `--radius: 0.625rem`, with `rounded-md` … `rounded-3xl` derived from it in `@theme`.
+- `animate-aurora-drift`: an 11s horizontal sway (±40px) with a breathing opacity. Pulseflow applies it to
+  the small logo and "live" dots, and so does this site — which means those dots travel sideways past
+  their labels. That is faithful to the reference; revisit if it reads as a bug.
 
-Token roles under the gradient:
+Tokens live under `:root` / `.dark` in `src/index.css` and are mapped into Tailwind's `@theme` —
+**the codebase deliberately uses no dark-variant classes**. Opacity modifiers resolve through `color-mix`,
+so the variables must hold complete color values.
 
-- `--ink` is **white** and carries all text.
-- `--paper` is a dark navy used only for text sitting *on* white surfaces — the solid CTA buttons, which
-  are `bg-ink text-paper`. It is no longer a page background.
-- `--scrim` is a translucent dark panel. The Problem and About sections and the nav bar use `bg-scrim`
-  so they separate from the page without hiding the gradient behind them.
-- `--signal` and `--signal-soft` are both white. The two-accent split that the previous palette needed no
-  longer applies, but the tokens are kept so components don't need rewiring if a colored accent returns.
+- `--surface` / `--on-surface` — the light sections (Process, the CTA wrapper, Services). This is the only
+  thing the theme toggle flips: white with ink text in light mode, a raised navy surface in dark mode. The
+  dark surface (`oklch(0.275 …)`, ink's hue and chroma a step lighter) is **derived** — Pulseflow has no dark
+  theme to take it from. The `.dark` block overrides nothing else.
+- `--accent-on-surface` — accent text on light surfaces. Pine in light mode, mint in dark mode.
 
-**Known accessibility problem.** White on the specified light gradient measures 1.62:1 at the green end,
-2.55:1 at the midpoint, and 3.86:1 at the blue end. WCAG AA needs 4.5:1 for body copy. The green half of
-the page is effectively illegible. This is a deliberate choice by the site owner, recorded here so it is
-not "fixed" by accident:
+Composition rule: **dark sections are always ink** (hero, Work, About, Contact, the CTA panel, nav,
+footer); **light sections use `surface`**. Don't use literal `bg-white` / `text-ink` for a light section —
+it will not respond to the theme toggle.
 
-- The scrim panels reach 3.34:1 over green and 6.61:1 over blue.
-- The dark theme keeps the same two hues at lower lightness (`hsl(110 45% 20%)` / `hsl(220 55% 22%)`) and
-  clears AA at 10.15:1 and 13.40:1. It is the accessible variant.
-- For the light theme to pass, the stops would need to be about `hsl(110 75% 30%)` and `hsl(220 80% 55%)`.
+Deliberate deviations from Pulseflow, all for contrast:
 
-`scratchpad/grad.mjs` (regenerate if missing) computes all of these, including the scrim composites and
-the gradient midpoint. Run it after any change to the gradient stops.
+- Pulseflow sets small mint text on white: 1.89:1. Accent text on light surfaces uses
+  `accent-on-surface` (pine, 11.08:1) instead.
+- Pulseflow uses `white/35`–`white/40` for fine print on ink (3.20–3.78:1) and `ink/55` for card body on
+  white (3.91:1). The floor here is `white/55` on ink and `on-surface/70` on surfaces.
+- Pulseflow's stats band and stat cards show metrics (throughput, team size). Nexora has no real figures,
+  so those slots carry the problem statement and facts instead. Don't fill them with invented numbers.
 
-Because the variables are real colors, they are also valid directly in SVG `fill` / `stroke` attributes —
-`PipelineDiagram.jsx` relies on this.
+Every text pairing clears WCAG AA in both themes; the lowest is `white/55` on ink at 6.00:1.
+`scratchpad/pulse.mjs` (regenerate if missing) converts the oklch values and measures every pairing. Run it
+after any palette change.
+
+The Pulseflow stylesheet also defined a full set of UI-library tokens (`background`, `primary`, `sidebar`, `chart-*`…).
+Pulseflow's page never uses them, so they were not carried over.
 
 `.dark` and `:root` have equal specificity and both match `<html>`, so `.dark` must stay *after* `:root` in
 `index.css` to win.

@@ -4,104 +4,86 @@
    and compiles dead rules into the stylesheet. */
 @source not "../*.md";
 
-/* Class-based dark mode: the pre-paint script in index.html puts .dark on <html>. */
+/* Class-based dark mode: src/theme-init.js puts .dark on <html>. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Design tokens point at the runtime variables below, so a .dark swap re-themes
-   every utility (bg-ink, text-ink/85, border-ink/25, …) with no dark: variants. */
 @theme {
   --color-ink: var(--ink);
-  --color-paper: var(--paper);
-  --color-signal: var(--signal);
-  --color-signal-soft: var(--signal-soft);
-  --color-scrim: var(--scrim);
-  --color-slate: var(--slate);
-  --color-line: var(--line);
+  --color-pine: var(--pine);
+  --color-mint: var(--mint);
+  --color-mintbright: var(--mintbright);
+  --color-surface: var(--surface);
+  --color-on-surface: var(--on-surface);
+  --color-accent-on-surface: var(--accent-on-surface);
 
-  --font-display: "Space Grotesk", sans-serif;
-  --font-body: "Inter", sans-serif;
-}
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
 
-/* ---------------------------------------------------------------------------
-   Palette: green -> blue gradient ground, white text.
+  /* Pulseflow's radius scale, all derived from one base (--radius, below). */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
 
-   The page background is a linear gradient, so it is NOT a color token — it is
-   painted on <body>. --ink is white and carries all text; --paper is the dark
-   value used for text sitting ON white surfaces (the solid CTA buttons).
-   --scrim is a translucent dark panel used where a section needs separation
-   without hiding the gradient behind it.
-
-   Contrast: white on the light gradient measures 1.62:1 at the green end and
-   3.86:1 at the blue end, both under the 4.5:1 WCAG AA needs for body copy. The
-   dark theme keeps the same two hues at lower lightness, where white clears AA
-   comfortably. See the note in CLAUDE.md.
---------------------------------------------------------------------------- */
-
-:root {
-  --grad-a: hsl(110 75% 60%);        /* green */
-  --grad-b: hsl(220 80% 60%);        /* blue */
-
-  --ink: hsl(0 0% 100%);             /* all text: white */
-  --paper: hsl(220 45% 12%);         /* text on white surfaces (buttons) */
-  --signal: hsl(0 0% 100%);          /* accents read as white on the gradient */
-  --signal-soft: hsl(0 0% 100%);
-  --slate: hsl(0 0% 100% / 0.78);    /* muted text */
-  --line: hsl(0 0% 100%);
-  --scrim: hsl(220 50% 10% / 0.34);  /* translucent section panels + nav bar */
-  color-scheme: light;
-}
-
-.dark {
-  /* Same two hues, lower lightness — this is the variant where white text passes AA. */
-  --grad-a: hsl(110 45% 20%);
-  --grad-b: hsl(220 55% 22%);
-
-  --ink: hsl(0 0% 100%);
-  --paper: hsl(220 45% 10%);
-  --signal: hsl(0 0% 100%);
-  --signal-soft: hsl(0 0% 100%);
-  --slate: hsl(0 0% 100% / 0.78);
-  --line: hsl(0 0% 100%);
-  --scrim: hsl(220 60% 6% / 0.40);
-  color-scheme: dark;
-}
-
-@layer base {
-  html { scroll-behavior: smooth; }
-  /* Solid fallback so the overscroll gutter matches rather than showing white. */
-  html { background-color: var(--grad-b); }
-  body {
-    font-family: var(--font-body);
-    min-height: 100vh;
-    background-color: var(--grad-b);
-    background-image: linear-gradient(160deg, var(--grad-a) 0%, var(--grad-b) 100%);
-    /* Fixed so one gradient spans the page instead of repeating per section. */
-    background-attachment: fixed;
+  /* Pulseflow's aurora drift: a slow horizontal sway with a breathing glow. */
+  --animate-aurora-drift: aurora-drift 11s ease-in-out infinite;
+  @keyframes aurora-drift {
+    0% { transform: translateX(-40px); opacity: 0.5; }
+    50% { transform: translateX(40px); opacity: 1; }
+    100% { transform: translateX(-40px); opacity: 0.5; }
   }
 }
 
-@keyframes drawline {
-  from { stroke-dashoffset: 1; }
-  to { stroke-dashoffset: 0; }
+/* ---------------------------------------------------------------------------
+   Palette: the Pulseflow system — ink, pine, mint, mintbright.
+
+   Values, fonts, radius and animation are taken verbatim from Pulseflow's
+   source stylesheet ("Agency palette: Neon Mint"), in oklch as that file
+   required. Ink is a deep navy (hue 251), not a green-black.
+
+   Composition: dark sections (hero, about, work, contact, the CTA panel, footer)
+   are always ink with white text. Light sections use --surface / --on-surface,
+   which the theme toggle flips — white with ink text in light mode, a raised
+   navy surface in dark mode. --surface in dark mode is derived (ink's hue and
+   chroma, a step lighter); Pulseflow has no dark theme to take it from.
+--------------------------------------------------------------------------- */
+
+:root {
+  --radius: 0.625rem;
+
+  --ink: oklch(0.2177 0.0356 251.2935);         /* deep navy — page ground, dark sections */
+  --pine: oklch(0.3484 0.0547 163.3594);        /* the band behind Problem, glow orbs */
+  --mint: oklch(0.778 0.1454 169.7485);         /* primary buttons, accents on ink */
+  --mintbright: oklch(0.9041 0.1584 158.6761);  /* hovers, pills, highlights */
+
+  --surface: #ffffff;
+  --on-surface: var(--ink);
+  /* Pulseflow sets small mint text on white; mint on white is unreadable, so
+     accent text on light surfaces uses pine instead. */
+  --accent-on-surface: var(--pine);
+  color-scheme: dark;
 }
 
-.pipeline-line {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: drawline 1.8s ease forwards;
-  animation-delay: 0.3s;
+.dark {
+  --surface: oklch(0.275 0.0356 251.2935);
+  --on-surface: #ffffff;
+  --accent-on-surface: var(--mint);
 }
 
-@keyframes nodepop {
-  from { opacity: 0; transform: scale(0.4); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.pipeline-node {
-  opacity: 0;
-  animation: nodepop 0.4s ease forwards;
+@layer base {
+  html { scroll-behavior: smooth; background-color: var(--ink); }
+  body {
+    font-family: var(--font-body);
+    min-height: 100vh;
+    background-color: var(--ink);
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pipeline-line, .pipeline-node { animation: none; opacity: 1; stroke-dashoffset: 0; }
+  html { scroll-behavior: auto; }
+  .animate-aurora-drift { animation: none; }
 }

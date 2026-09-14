@@ -1,50 +1,62 @@
-function ServiceRow({ title, status, available, description, items }) {
+function Status({ available, children }) {
   return (
-    <div className={`grid md:grid-cols-[1fr_2fr] gap-6 py-8 border-t border-ink/25 ${available ? '' : 'opacity-80'}`}>
-      <div>
-        <h3 className="font-display text-xl font-semibold mb-1">{title}</h3>
-        <p className={`text-sm ${available ? 'text-signal' : 'text-slate'}`}>{status}</p>
-      </div>
-      <div>
-        <p className="text-ink/85 mb-3 max-w-lg">{description}</p>
-        {items && (
-          <ul className="text-sm text-ink/80 space-y-1">
-            {items.map(it => <li key={it}>— {it}</li>)}
-          </ul>
-        )}
-      </div>
-    </div>
+    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${available ? 'bg-mint/15 text-accent-on-surface' : 'bg-on-surface/5 text-on-surface/70'}`}>
+      {children}
+    </span>
   );
 }
 
+const upcoming = [
+  { title: 'Cloud Computing', description: 'Infrastructure setup, migration, and management to keep your systems reliable and scalable as you grow.' },
+  { title: 'Web Design', description: 'Clean, fast, conversion-focused websites — built to work seamlessly with the automation systems we design.' },
+];
+
+const automationItems = ['Lead capture & scoring systems', 'Automated follow-up sequences (email / WhatsApp / SMS)', 'CRM & Google Workspace integration', 'Custom chatbots (WhatsApp, web)', 'Document & data processing automation'];
+
 export default function Services() {
   return (
-    <section className="w-full max-w-6xl mx-auto px-6 pt-16 pb-24">
-      <div className="max-w-xl mb-6">
-        <h1 className="font-display text-4xl md:text-5xl font-semibold leading-tight mb-4">What We Do</h1>
-        <p className="text-ink/85">
-          We're an IT solutions company built to grow with you — starting with AI automation, expanding into the infrastructure and web presence you'll need next.
-        </p>
+    <section className="flex-1 bg-surface">
+      <div className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
+        <div className="max-w-2xl">
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-on-surface">Services</span>
+          <h1 className="mt-4 font-display text-4xl font-semibold leading-tight tracking-[-0.03em] text-balance text-on-surface lg:text-5xl">What We Do</h1>
+          <p className="mt-5 max-w-[48ch] text-lg text-pretty text-on-surface/70">
+            We're an IT solutions company built to grow with you — starting with AI automation, expanding into the infrastructure and web presence you'll need next.
+          </p>
+        </div>
+
+        <div className="mt-14 grid gap-5 md:grid-cols-2">
+          <article className="rounded-2xl bg-surface p-6 ring-1 ring-mint/40 md:col-span-2 md:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-display text-2xl font-semibold text-on-surface">AI Automation</h2>
+              <Status available>Available now</Status>
+            </div>
+            <div className="mt-4 grid gap-6 md:grid-cols-2">
+              <p className="text-pretty text-on-surface/70">
+                We design and build automated systems that handle lead capture, scoring, follow-up sequencing, and CRM integration — end to end. If it's a repeatable manual process, we can likely automate it.
+              </p>
+              <ul className="space-y-2 text-sm text-on-surface/80">
+                {automationItems.map(it => (
+                  <li key={it} className="flex gap-2.5">
+                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-mint" aria-hidden="true" />
+                    {it}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+
+          {upcoming.map(s => (
+            <article key={s.title} className="rounded-2xl bg-surface p-6 ring-1 ring-on-surface/10">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h2 className="font-display text-lg font-semibold text-on-surface">{s.title}</h2>
+                <Status>Coming soon</Status>
+              </div>
+              <p className="mt-3 text-sm text-pretty text-on-surface/70">{s.description}</p>
+            </article>
+          ))}
+        </div>
       </div>
-      <ServiceRow
-        title="AI Automation"
-        status="Available now"
-        available={true}
-        description="We design and build automated systems that handle lead capture, scoring, follow-up sequencing, and CRM integration — end to end. If it's a repeatable manual process, we can likely automate it."
-        items={['Lead capture & scoring systems', 'Automated follow-up sequences (email / WhatsApp / SMS)', 'CRM & Google Workspace integration', 'Custom chatbots (WhatsApp, web)', 'Document & data processing automation']}
-      />
-      <ServiceRow
-        title="Cloud Computing"
-        status="Coming soon"
-        available={false}
-        description="Infrastructure setup, migration, and management to keep your systems reliable and scalable as you grow."
-      />
-      <ServiceRow
-        title="Web Design"
-        status="Coming soon"
-        available={false}
-        description="Clean, fast, conversion-focused websites — built to work seamlessly with the automation systems we design."
-      />
     </section>
   );
 }

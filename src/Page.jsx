@@ -8,7 +8,7 @@ export default function Page({ children }) {
   const [dark, toggleTheme] = useTheme();
 
   return (
-    <div className="font-body min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col bg-ink font-body text-white antialiased">
       <NavBar dark={dark} onThemeToggle={toggleTheme} />
       <main className="flex-1 flex flex-col">{children}</main>
       <Footer />

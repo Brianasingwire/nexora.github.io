@@ -10,7 +10,7 @@ export default function App() {
   const [dark, toggleTheme] = useTheme();
 
   return (
-    <div className="font-body">
+    <div className="min-h-screen bg-ink font-body text-white antialiased">
       <NavBar dark={dark} onThemeToggle={toggleTheme} />
       <Hero />
       <Problem />
