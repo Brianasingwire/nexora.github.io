@@ -49,10 +49,10 @@ page sharing a common vendor chunk:
 That choice is deliberate: GitHub Pages serves static files, so real pages give working deep links and
 refreshes with no 404 fallback shim, and the contact page doesn't ship the home page's code. Adding a page
 means a new HTML shell, an `src/<name>-main.jsx` entry, and a line in `rollupOptions.input` — not a
-route table. Every page except home wraps its content in `src/Page.jsx` (nav + main + footer + theme);
+route table. Every page except home wraps its content in `src/Page.jsx` (nav + main + footer);
 home composes its own sections because it has many.
 
-Each HTML shell is thin: meta tags, Google Fonts, the pre-paint theme script, `#root`, and the module
+Each HTML shell is thin: meta tags, Google Fonts, `#root`, and the module
 entry. Page components live in `src/`, section components in `src/components/`. Sections are
 self-contained: their copy and data live as literals inside their own file.
 
@@ -62,17 +62,17 @@ and it would break again if `base` changes. `section(id)` resolves to a same-doc
 and a navigation-plus-scroll from anywhere else. `#top` is the only home-page anchor left — Services,
 Work, About and Contact are all their own pages.
 
-The pre-paint theme script lives in `src/theme-init.js` and is injected into every page's `<head>` by the
-`inject-theme-script` plugin in `vite.config.js`. It cannot be bundled — it has to run before first paint,
-before the module scripts — so it is read as raw text and inlined. Don't paste copies into the HTML
-shells; edit that one file.
-
 ### Theming and palette (the part that's easy to break)
 
 The design system is taken from a reference design, **Pulseflow**: its saved page supplied the
 composition, spacing, type scale and component patterns, and its source stylesheet supplied the exact
 values. Both reference files were deleted once their contents were captured here and in `src/index.css`,
 so this section is now the record of what was taken.
+
+**The site has a single, dark-first theme, and deliberately no light/dark toggle.** Pulseflow has no dark
+mode. A toggle existed briefly after the redesign, but with most sections permanently ink it changed
+nothing on the Work, About and Contact pages and looked broken, so it was removed along with its pre-paint
+script and hook. Don't reintroduce a toggle unless the dark sections get a genuine light treatment too.
 
 Values, all verbatim from the Pulseflow stylesheet and kept in oklch as that file required:
 
@@ -89,19 +89,15 @@ Values, all verbatim from the Pulseflow stylesheet and kept in oklch as that fil
   the small logo and "live" dots, and so does this site — which means those dots travel sideways past
   their labels. That is faithful to the reference; revisit if it reads as a bug.
 
-Tokens live under `:root` / `.dark` in `src/index.css` and are mapped into Tailwind's `@theme` —
-**the codebase deliberately uses no dark-variant classes**. Opacity modifiers resolve through `color-mix`,
-so the variables must hold complete color values.
+Tokens live under `:root` in `src/index.css` and are mapped into Tailwind's `@theme`. Opacity modifiers
+resolve through `color-mix`, so the variables must hold complete color values.
 
-- `--surface` / `--on-surface` — the light sections (Process, the CTA wrapper, Services). This is the only
-  thing the theme toggle flips: white with ink text in light mode, a raised navy surface in dark mode. The
-  dark surface (`oklch(0.275 …)`, ink's hue and chroma a step lighter) is **derived** — Pulseflow has no dark
-  theme to take it from. The `.dark` block overrides nothing else.
-- `--accent-on-surface` — accent text on light surfaces. Pine in light mode, mint in dark mode.
+- `--surface` / `--on-surface` — the light sections (Process, the CTA wrapper, Services): white with ink text.
+- `--accent-on-surface` — accent text on light surfaces: pine.
 
-Composition rule: **dark sections are always ink** (hero, Work, About, Contact, the CTA panel, nav,
-footer); **light sections use `surface`**. Don't use literal `bg-white` / `text-ink` for a light section —
-it will not respond to the theme toggle.
+Composition rule: **dark sections are ink** (hero, Work, About, Contact, the CTA panel, nav, footer);
+**light sections use `surface`**. Prefer the surface tokens over literal `bg-white` / `text-ink` so light
+sections stay changeable in one place.
 
 Deliberate deviations from Pulseflow, all for contrast:
 
@@ -112,24 +108,15 @@ Deliberate deviations from Pulseflow, all for contrast:
 - Pulseflow's stats band and stat cards show metrics (throughput, team size). Nexora has no real figures,
   so those slots carry the problem statement and facts instead. Don't fill them with invented numbers.
 
-Every text pairing clears WCAG AA in both themes; the lowest is `white/55` on ink at 6.00:1.
-`scratchpad/pulse.mjs` (regenerate if missing) converts the oklch values and measures every pairing. Run it
-after any palette change.
+Every text pairing clears WCAG AA; the lowest is `white/55` on ink at 6.00:1. `scratchpad/pulse.mjs`
+(regenerate if missing) converts the oklch values and measures every pairing. Run it after any palette
+change.
 
-The Pulseflow stylesheet also defined a full set of UI-library tokens (`background`, `primary`, `sidebar`, `chart-*`…).
-Pulseflow's page never uses them, so they were not carried over.
-
-`.dark` and `:root` have equal specificity and both match `<html>`, so `.dark` must stay *after* `:root` in
-`index.css` to win.
+The Pulseflow stylesheet also defined a full set of UI-library tokens (`background`, `primary`, `sidebar`,
+`chart-*`…). Pulseflow's page never uses them, so they were not carried over.
 
 Tailwind v4 scans markdown as well as source, so utility class names written in docs get compiled into the
 stylesheet. `@source not "../*.md"` in `index.css` suppresses that.
-
-Dark mode is applied from two places, and both are needed:
-1. `src/theme-init.js`, injected into every page's `<head>` before first paint, reads
-   `localStorage['nexora-theme']` (falling back to `prefers-color-scheme`) and sets the class.
-2. `useTheme` toggles the class and writes `localStorage` when the user clicks the toggle. It seeds its
-   state by *reading the class off the DOM*, so step 1 is the source of truth on load.
 
 ## Secrets and pushing
 
